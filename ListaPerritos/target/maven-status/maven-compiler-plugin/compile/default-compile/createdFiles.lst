@@ -1,0 +1,7 @@
+servlets\SvOpciones.class
+servlets\SvPerros.class
+com\mycompany\listaperritos\metodos.class
+servlets\SvEliminar.class
+com\mycompany\listaperritos\resources\JavaEE8Resource.class
+com\mycompany\listaperritos\JAXRSConfiguration.class
+com\mycompany\listaperritos\Perros.class
