@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -132,6 +134,30 @@ public static void BorrarPerro( String borrarNombre, ServletContext context) {
             }
         }
         guardarDatosDePerrosEnArchivo(context,nuPerros );
+    }
+public static ArrayList<Perros> ordenarPerro(String tipo, ServletContext context){
+        //array principal de tipo perro se deserializa
+         ArrayList <Perros> nuPerros = cargarPerrosDesdeArchivo(context);
+        //casos para organizar los perros por medio de collectiones no por listas
+        switch(tipo){
+                //Organizar por nombre, orden abecedario
+            case "nombre":
+                   Collections.sort(nuPerros, Comparator.comparing(Perros::getNombre));
+                            Collections.sort(nuPerros, (p1, p2) -> p1.getNombre().toLowerCase().compareTo(p2.getNombre().toLowerCase()));
+                        
+            //Organizar por edad, el mayor.
+                break;
+            case "edad":
+                 Collections.sort(nuPerros, Collections.reverseOrder(Comparator.comparing(Perros::getEdad)));
+                break;
+                //Organizar por puntos, el perro ganador
+            case "puntos":
+                 Collections.sort(nuPerros, Collections.reverseOrder(Comparator.comparing(Perros::getPuntos)));
+                break;
+
+        }
+         //Retorna los perros       
+       return nuPerros; 
     }
 }        
 

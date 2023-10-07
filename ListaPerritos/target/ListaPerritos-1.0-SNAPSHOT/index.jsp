@@ -1,3 +1,4 @@
+
 <%@page import="com.mycompany.listaperritos.metodos"%>
 <%@page import="java.io.IOException"%>
 <%@page import="java.io.ObjectInputStream"%>
@@ -61,8 +62,34 @@
         <button type="submit" class="btn btn-primary">insertar perro</button>
     </form>
         </div>
+       
         <div class="col-md-8 " >
             <table class="table table-striped table-dark ">
+              <nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#"></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item dropdown">
+   <!-- Desplegable organizar por -->
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"> Ordenar por
+          </a>
+                 <ul class="dropdown-menu">
+   <!-- Redirije al index, a la pagina principal -->
+            <li><a class="dropdown-item" href="index.jsp?tipo=nombre">Nombre</a></li>
+            <li><a class="dropdown-item" href="index.jsp?tipo=edad">edad</a></li>
+            <li><a class="dropdown-item" href="index.jsp?tipo=puntos">puntos</a></li>
+          </ul>
+        </li>
+      </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>   
                 <thead> 
                     <tr>
                         <th>Nombre</th>
@@ -76,12 +103,15 @@
                 <tbody>
                     <% 
                     ArrayList<Perros> nuPerros = new ArrayList<>();
-                    ServletContext servletContext = getServletContext();
-                    String perrosBuscar=request.getParameter("buscar");
                     
-                    if (perrosBuscar==null){
+                    
+                    String perrosBuscar=request.getParameter("buscar");
+                    String tipo= request.getParameter("tipo");
+                    System.out.println(tipo);
+                    ServletContext servletContext = getServletContext();
+                    if (perrosBuscar==null && tipo==null){
                         nuPerros = metodos.cargarPerrosDesdeArchivo(servletContext);
-                        } else if(perrosBuscar!=null){
+                        } else if(perrosBuscar!=null && tipo==null){
                         
                         ArrayList<Perros> perros = metodos.cargarPerrosDesdeArchivo(servletContext);
                         ArrayList<Perros> perrosBuscarr = new ArrayList <>();
@@ -94,7 +124,9 @@
                           }
                          }
                          nuPerros=perrosBuscarr;
-                        }
+                        }else if(tipo!=null ){
+            
+            nuPerros = metodos.ordenarPerro(tipo, servletContext);                  }
                     if (nuPerros!= null && !nuPerros.isEmpty()){
                         for(Perros cPerros: nuPerros) {                        
                        
@@ -105,11 +137,12 @@
                             <td><%= cPerros .getFoto()%></td>
                             <td><%= cPerros .getPuntos() %></td>
                             <td><%= cPerros .getEdad() %></td>                                         
-                        <td>  <div class="btn-group me-2" role="group" aria-label="First group">
+                        <td>  
+                            <div class="btn-group me-2" role="group" aria-label="First group">
                                      
                                      <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-nombre="<%=cPerros.getNombre()%>" ><i class ="fa-solid fa-eye"></i> </a>
                                      
-                                     <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal" data-nombre="<%=cPerros.getNombre()%>" ><i class="fa-solid fa-pen" ></i></a>
+                                     <a href="editPerros.jsp?editar=<%= cPerros.getNombre()%>" class="btn btn-primary" ><i class="fa-solid fa-pen" ></i></a>
 
                                     <a href="SvEliminar?nombre=<%= cPerros.getNombre()%>" class="btn btn-primary" ><i class="fa-solid fa-trash" ></i></a>
                                   </div></td>
@@ -217,36 +250,3 @@
     });
 </script>
 
-<script>
-    /**
-     * Esta función se encarga de eliminar un perro a través de una solicitud AJAX al servidor.
-     */
-    function deleteDog() {
-        // Obtiene el nombre del perro desde una variable previamente definida (nombreP)
-        var nombre = nombreP;
-
-        // Registra el nombre del perro en la consola (para fines de depuración)
-        console.log(nombre);
-
-        // Realiza una solicitud AJAX al servlet 'SvEliminar' para eliminar el perro
-        $.ajax({
-            url: 'SvBorrar?nombre=' + nombre, // URL del servlet con el parámetro 'nombre' para la eliminación
-            method: 'GET', // Método HTTP utilizado para la solicitud (GET en este caso)
-            success: function (data) {
-                // En caso de éxito en la solicitud:
-
-                // Cierra el modal de eliminación
-                $('#deleteModal').modal('hide');
-
-                // Recarga la página actual para reflejar los cambios
-                location.reload();
-            },
-            error: function () {
-                // En caso de error en la solicitud:
-
-                // Registra un mensaje de error en la consola (para fines de depuración)
-                console.log('Error al eliminar el perro.');
-            }
-        });
-    }
-</script>

@@ -79,11 +79,6 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response) 
         //Guardar la lista actualizada en un archivo
         metodos.guardarDatosDePerrosEnArchivo( context, perros);
 
-        
-
-        // Redireccionar a la página de destino
-        //response.sendRedirect("index.jsp");
-
         System.out.println(nombre);
         System.out.println(raza);
         System.out.println(foto);
